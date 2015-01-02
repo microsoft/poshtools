@@ -12,7 +12,7 @@ namespace PowerShellTools.Intellisense
     [Name("PowerShellTokenCompletion")]
     internal class PowerShellCompletionSourceProvider : ICompletionSourceProvider
     {
-        private static readonly ILog Log = LogManager.GetLogger(typeof (PowerShellCompletionSourceProvider));
+        private static readonly ILog Log = LogManager.GetLogger(typeof(PowerShellCompletionSourceProvider));
 
         [Import]
         internal ITextStructureNavigatorSelectorService NavigatorService { get; set; }
