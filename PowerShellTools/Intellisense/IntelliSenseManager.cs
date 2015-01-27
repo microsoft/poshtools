@@ -103,7 +103,7 @@ namespace PowerShellTools.Intellisense
                     return VSConstants.S_OK;
                 }
             }
-            // check for Ctrl-Space usage
+            // check for Ctrl-Space usage.
             if (commandId == (uint)VSConstants.VSStd2KCmdID.COMPLETEWORD)
             {
                 if (_activeSession != null && !_activeSession.IsDismissed)
