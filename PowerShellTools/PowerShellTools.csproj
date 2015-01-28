@@ -475,7 +475,7 @@
     <Compile Include="PowerShellToolsPackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RunspaceRef.cs" />
-    <Compile Include="ServiceManagement\ChannelFactoryMaker.cs" />
+    <Compile Include="ServiceManagement\ChannelFactoryBuilder.cs" />
     <Compile Include="ServiceManagement\ConnectionManager.cs" />
     <Compile Include="ServiceManagement\PowershellHostProcessException.cs" />
     <Compile Include="ServiceManagement\PowershellHostProcessFactory.cs" />

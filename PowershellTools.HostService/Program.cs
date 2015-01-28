@@ -33,7 +33,7 @@ namespace PowerShellTools.HostService
             {
                 return 1;
             }
-            
+
             int vsProcessId;
             if (!Int32.TryParse(args[1].Remove(0, Constants.VsProcessIdArg.Length),
                             NumberStyles.None,
@@ -60,7 +60,16 @@ namespace PowerShellTools.HostService
 
             // Step 2: Create the service host.
             CreatePowershellServiceHost(baseAddress, binding);
-            
+
+            _powershellServiceHost.Faulted += (s, e) =>
+            {
+                Environment.Exit(0);
+            };
+            _powershellServiceHost.Closed += (s, e) =>
+            {
+                Environment.Exit(0);
+            };
+
             // Step 3: Signal parent process that host is ready so that it can proceed.
             EventWaitHandle readyEvent = new EventWaitHandle(false, EventResetMode.ManualReset, readyEventName);
             readyEvent.Set();

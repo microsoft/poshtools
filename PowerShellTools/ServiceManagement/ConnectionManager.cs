@@ -8,33 +8,48 @@ namespace PowerShellTools.ServiceManagement
     /// <summary>
     /// Manage the process and channel creation.
     /// </summary>
-    internal static class ConnectionManager
+    internal sealed class ConnectionManager
     {
-        private static IPowershellIntelliSenseService _powershellIntelliSenseService;
+        private IPowershellIntelliSenseService _powershellIntelliSenseService;
         private static object _syncObject = new object();
-        private static ChannelFactory<IPowershellIntelliSenseService> _channelFactory;
+        private static ConnectionManager _instance;
 
-        static ConnectionManager()
+        private ConnectionManager()
         {
             OpenClientConnection();
         }
 
-        public static IPowershellIntelliSenseService PowershellIntelliSenseSerivce
+        public static ConnectionManager Instance 
+        { 
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new ConnectionManager();
+                }
+                return _instance;
+            }
+        }
+
+        public IPowershellIntelliSenseService PowershellIntelliSenseSerivce
         {
             get
             {
-                if (_powershellIntelliSenseService == null)
+                lock (_syncObject)
                 {
-                    OpenClientConnection();
+                    if (_powershellIntelliSenseService == null)
+                    {
+                        OpenClientConnection();
+                    }
                 }
+                
                 return _powershellIntelliSenseService;
             }
         }
 
-        private static void OpenClientConnection()
+        private void OpenClientConnection()
         {
-            var hostProcess = PowershellHostProcessFactory.EnsurePowershellHostProcess();
-            hostProcess.Process.Exited += Process_Exited;
+            var hostProcess = PowershellHostProcessFactory.Instance.HostProcess;
 
             // net.pipe://localhost/UniqueEndpointGuid/NamedPipePowershellProcess
             var endPointAddress = Constants.ProcessManagerHostUri + hostProcess.EndpointGuid + "/" + Constants.ProcessManagerHostRelativeUri;
@@ -43,12 +58,24 @@ namespace PowerShellTools.ServiceManagement
             {
                 if (_powershellIntelliSenseService == null)
                 {
-                    var factoryMaker = new ChannelFactoryMaker<IPowershellIntelliSenseService>();
-                    _channelFactory = factoryMaker.CreateChannelFactory(endPointAddress);
-                    _channelFactory.Faulted += ChannelFactoryMaker_Faulted;
-                    _channelFactory.Closed += ChannelFactoryMaker_Closed;
-                    _channelFactory.Open();
-                    _powershellIntelliSenseService = _channelFactory.CreateChannel();
+                    var factoryMaker = new ChannelFactoryBuilder<IPowershellIntelliSenseService>();
+                    var channelFactory = factoryMaker.CreateChannelFactory(endPointAddress);
+                    channelFactory.Faulted += (s, e) => {              
+                        ((ChannelFactory<IPowershellIntelliSenseService>)s).Abort();
+                        _powershellIntelliSenseService = null;
+                    };
+                    channelFactory.Closed += (s, e) => {
+                        ((ChannelFactory<IPowershellIntelliSenseService>)s).Abort();
+                        _powershellIntelliSenseService = null;
+                    };
+                    channelFactory.Open();
+                    _powershellIntelliSenseService = channelFactory.CreateChannel();
+
+                    hostProcess.Process.Exited += (s, e) => {
+                        channelFactory.Abort();
+                        channelFactory = null;
+                        _powershellIntelliSenseService = null;
+                    };
                 }
             }
             catch
@@ -56,34 +83,6 @@ namespace PowerShellTools.ServiceManagement
                 // Connection has to be established...
                 _powershellIntelliSenseService = null;
                 throw;
-            }
-        }
-
-        private static void Process_Exited(object sender, EventArgs e)
-        {
-            lock (_syncObject)
-            {
-                _channelFactory.Faulted -= ChannelFactoryMaker_Faulted;
-                _channelFactory.Closed -= ChannelFactoryMaker_Closed;
-                _channelFactory.Abort();
-                _channelFactory = null;
-                _powershellIntelliSenseService = null;
-            }
-        }
-
-        private static void ChannelFactoryMaker_Closed(object sender, EventArgs e)
-        {
-            lock (_syncObject)
-            {
-                _powershellIntelliSenseService = null;
-            }
-        }
-
-        private static void ChannelFactoryMaker_Faulted(object sender, EventArgs e)
-        {
-            lock (_syncObject)
-            {
-                _powershellIntelliSenseService = null;
             }
         }
     }

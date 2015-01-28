@@ -5,10 +5,8 @@ using PowerShellTools.Common;
 
 namespace PowerShellTools.ServiceManagement
 {
-    internal class ChannelFactoryMaker<ServiceType> where ServiceType : class
+    internal class ChannelFactoryBuilder<ServiceType> where ServiceType : class
     {
-        public ChannelFactoryMaker() { }
-
         public ChannelFactory<ServiceType> CreateChannelFactory(string endPointAddress)
         {
             var binding = CreateBinding();

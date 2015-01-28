@@ -91,7 +91,7 @@ namespace PowerShellTools
     public sealed class PowerShellToolsPackage : CommonPackage
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(PowerShellToolsPackage));
-        private static IPowershellIntelliSenseService _intelliSenseService;
+        private static ConnectionManager _connectionManager;
 
         /// <summary>
         /// Default constructor of the package.
@@ -122,11 +122,11 @@ namespace PowerShellTools
         /// </summary>
         public static PowerShellToolsPackage Instance { get; private set; }
 
-        public static IPowershellIntelliSenseService IntelliSenseService
-        {
+        internal static IPowershellIntelliSenseService IntelliSenseService
+        { 
             get
             {
-                return ConnectionManager.PowershellIntelliSenseSerivce;
+                return _connectionManager.PowershellIntelliSenseSerivce;
             }
         }
 
@@ -304,8 +304,7 @@ namespace PowerShellTools
 
         private void EstablishServiceConnection()
         {
-            // This is for triggering the initialization so that first IntelliSense trigger won't take too long.
-            var firstTrigger = ConnectionManager.PowershellIntelliSenseSerivce;
+            _connectionManager = ConnectionManager.Instance;
         }
 
         public T GetDialogPage<T>() where T : DialogPage

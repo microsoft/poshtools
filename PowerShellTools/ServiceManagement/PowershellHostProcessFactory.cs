@@ -11,38 +11,48 @@ namespace PowerShellTools.ServiceManagement
     /// <summary>
     /// Initilize a process for hosting the WCF service.
     /// </summary>
-    internal static class PowershellHostProcessFactory
+    internal sealed class PowershellHostProcessFactory
     {
-        private static Lazy<PowershellHostProcess> _powershellHostProcess;
+        private Lazy<PowershellHostProcess> _powershellHostProcess;
+        private static PowershellHostProcessFactory _factory;
         private static object _syncObject = new object();
 
-        static PowershellHostProcessFactory()
+        private PowershellHostProcessFactory()
         {
             LazyCreatePowershellHostProcess();
         }
 
+        public static PowershellHostProcessFactory Instance
+        {
+            get
+            {
+                if (_factory == null)
+                {
+                    _factory = new PowershellHostProcessFactory();
+                }
+                return _factory;
+            }
+        }
         /// <summary>
         /// The host process we want.
         /// </summary>
-        internal static PowershellHostProcess HostProcess { get; set; }
-
-        /// <summary>
-        /// In case we need to change host process at some point. What we need to do is signal the termination of the process and then create a new one. 
-        /// </summary>
-        internal static void SignalProcessTerminated()
+        public PowershellHostProcess HostProcess
         {
-            lock (_syncObject)
+            get
             {
-                LazyCreatePowershellHostProcess();
+                lock (_syncObject)
+                {
+                    if (_powershellHostProcess == null)
+                    {
+                        LazyCreatePowershellHostProcess();
+                    }
+                }
+                
+                return _powershellHostProcess.Value;
             }
         }
 
-        internal static PowershellHostProcess EnsurePowershellHostProcess()
-        {
-            return _powershellHostProcess.Value;
-        }
-
-        private static PowershellHostProcess CreatePowershellHostProcess()
+        private PowershellHostProcess CreatePowershellHostProcess()
         {
             Process powershellHostProcess = new Process();
             string hostProcessReadyEventName = Constants.ReadyEventPrefix + Guid.NewGuid();
@@ -104,21 +114,20 @@ namespace PowerShellTools.ServiceManagement
         /// </summary>
         /// <param name="sender">The scource of the event.</param>
         /// <param name="e">An System.EventArgs that contains no event data.</param>
-        private static void PowershellHostProcess_Exited(object sender, EventArgs e)
+        private void PowershellHostProcess_Exited(object sender, EventArgs e)
         {
             Process p = sender as Process;
 
             lock (_syncObject)
             {
-                if (_powershellHostProcess.IsValueCreated &&
-                    _powershellHostProcess.Value.Process == p)
+                if (_powershellHostProcess.IsValueCreated && _powershellHostProcess.Value.Process == p)
                 {
                     LazyCreatePowershellHostProcess();
                 }
             }
         }
 
-        private static void LazyCreatePowershellHostProcess()
+        private void LazyCreatePowershellHostProcess()
         {
             _powershellHostProcess = new Lazy<PowershellHostProcess>(CreatePowershellHostProcess);
         }
