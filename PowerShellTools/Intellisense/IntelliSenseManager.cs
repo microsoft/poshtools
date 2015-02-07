@@ -65,7 +65,7 @@ namespace PowerShellTools.Intellisense
             }
             //make a copy of this so we can look at it after forwarding some commands 
             var commandId = nCmdId;
-            var typedChar = Char.MinValue;
+            var typedChar = char.MinValue;
             //make sure the input is a char before getting it 
             if (pguidCmdGroup == VSConstants.VSStd2K && nCmdId == (uint)VSConstants.VSStd2KCmdID.TYPECHAR)
             {
@@ -122,11 +122,11 @@ namespace PowerShellTools.Intellisense
             //pass along the command so the char is added to the buffer 
             int retVal = NextCommandHandler.Exec(ref pguidCmdGroup, nCmdId, nCmdexecopt, pvaIn, pvaOut);
             bool handled = false;
-            if (!typedChar.Equals(Char.MinValue) && IsIntellisenseTrigger(typedChar))
+            if (!typedChar.Equals(char.MinValue) && IsIntellisenseTrigger(typedChar))
             {
                 TriggerCompletion();
             }
-            if (!typedChar.Equals(Char.MinValue) && IsFilterTrigger(typedChar))
+            if (!typedChar.Equals(char.MinValue) && IsFilterTrigger(typedChar))
             {
                 if (_activeSession != null)
                 {
@@ -164,7 +164,7 @@ namespace PowerShellTools.Intellisense
             }
             if (handled) return VSConstants.S_OK;
             return retVal;
-        }        
+        }
 
         /// <summary>
         /// Triggers an IntelliSense session. This is done in a seperate thread than the UI to allow
@@ -329,7 +329,7 @@ namespace PowerShellTools.Intellisense
             _activeSession = null;
         }
 
-        private static bool SpanArgumentsAreValid(ITextSnapshot snapshot, int start, int length)
+        internal static bool SpanArgumentsAreValid(ITextSnapshot snapshot, int start, int length)
         {
             return start >= 0 && length >= 0 && start + length <= snapshot.Length;
         }
@@ -337,8 +337,8 @@ namespace PowerShellTools.Intellisense
         /// <summary>
         /// Determines whether a typed character should cause the completion source list to filter.
         /// </summary>
-        /// <param name="ch">The typed character.</param>
-        /// <returns>True if it is a filtering character.</returns>
+        /// <param name="ch"></param>
+        /// <returns></returns>
         private static bool IsFilterTrigger(char ch)
         {
             Log.DebugFormat("IsFilterTrigger: [{0}]", ch);
@@ -348,12 +348,12 @@ namespace PowerShellTools.Intellisense
         /// <summary>
         /// Determines whether a typed character should cause the manager to trigger the intellisense drop down.
         /// </summary>
-        /// <param name="ch">The typed character.</param>
-        /// <returns>True if it is a triggering character.</returns>
+        /// <param name="ch"></param>
+        /// <returns></returns>
         private static bool IsIntellisenseTrigger(char ch)
         {
             Log.DebugFormat("IsIntellisenseTrigger: [{0}]", ch);
             return ch == '-' || ch == '$' || ch == '.' || ch == ':' || ch == '\\';
-        }        
+        }
     }
 }
