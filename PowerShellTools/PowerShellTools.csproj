@@ -261,7 +261,6 @@
     <Compile Include="GeneralDialogPage.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Intellisense\BraceCompletionController.cs" />
     <Compile Include="Intellisense\IntellisenseController.cs" />
     <Compile Include="Intellisense\IntellisenseControllerProvider.cs" />
     <Compile Include="Intellisense\IntelliSenseManager.cs" />
@@ -273,7 +272,7 @@
     <Compile Include="LanguageService\Indenter.cs" />
     <Compile Include="LanguageService\PowerShellLanguageInfo.cs" />
     <Compile Include="LanguageService\TextViewFilter.cs" />
-    <Compile Include="LanguageService\EditFilter.cs" />
+    <Compile Include="LanguageService\ViewFilter.cs" />
     <Compile Include="Guids.cs" />
     <Compile Include="Classification\OutputPaneClassifier.cs" />
     <Compile Include="PackageProperties.cs" />

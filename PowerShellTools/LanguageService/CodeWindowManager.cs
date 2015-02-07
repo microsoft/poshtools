@@ -50,11 +50,11 @@ namespace PowerShellTools.LanguageService
             var factory = model.GetService<IEditorOperationsFactoryService>();
 
             EditFilter editFilter = _filter = new EditFilter(textView, factory.GetEditorOperations(textView));
-            var textViewAdapter = adaptersFactory.GetViewAdapter(textView);
-            editFilter.AttachKeyboardFilter(textViewAdapter);
+            var adapter = adaptersFactory.GetViewAdapter(textView);
+            editFilter.AttachKeyboardFilter(adapter);
 
             var viewFilter = new TextViewFilter();
-            viewFilter.AttachFilter(textViewAdapter);
+            viewFilter.AttachFilter(adapter);
         }
 
         private static void OnIdle(object sender, ComponentManagerEventArgs e)
