@@ -1,0 +1,37 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Choose>
+    <When Condition="'$(Language)' == 'C#' and !$(SuppressCommonAssemblyMetadata)">
+      <ItemGroup>
+        <AssemblyVersionAttribute Include="System.Reflection.AssemblyVersionAttribute">
+          <_Parameter1>$(AssemblyVersion)</_Parameter1>
+        </AssemblyVersionAttribute>
+
+        <AssemblyVersionAttribute Include="System.Reflection.AssemblyFileVersionAttribute">
+          <_Parameter1>$(BuildVersion)</_Parameter1>
+        </AssemblyVersionAttribute>
+
+        <AssemblyVersionAttribute Include="System.Reflection.AssemblyInformationalVersionAttribute">
+          <_Parameter1>$(BuildVersion)</_Parameter1>
+        </AssemblyVersionAttribute>
+
+        <Compile Include="$(BuildRoot)\Build\AssemblyInfoCommon.cs">
+          <Link>AssemblyInfoCommon.cs</Link>
+        </Compile>
+      </ItemGroup>
+    <PropertyGroup>
+      <CompileDependsOn>GenerateAssemblyInfoFile;$(CompileDependsOn)</CompileDependsOn>
+    </PropertyGroup>
+    </When>
+  </Choose>
+
+  <Target Name="GenerateAssemblyInfoFile">
+    <WriteCodeFragment AssemblyAttributes="@(AssemblyVersionAttribute)"
+                       Language="C#"
+                       OutputFile="$(MSBuildProjectDirectory)\GlobalAssemblyInfo.cs">
+      <Output TaskParameter="OutputFile" ItemName="Compile"/>
+      <Output TaskParameter="OutputFile" ItemName="FileWrites"/>
+    </WriteCodeFragment>
+  </Target>
+  
+  <Target Name="GetBuildVersion" Outputs="$(BuildVersion)" /> <!-- This is used by the VSIX to get the Version. -->
+</Project>
