@@ -3,7 +3,7 @@
   <Identifier Id="702AA1B3-556E-4AEE-AFB6-DCFA7FC420D3">
     <Name>PowerShellTools.Repl</Name>
     <Author>Visual Studio PowerShell Tools</Author>
-    <Version>2.1</Version>
+    <Version>1.0</Version>
     <Description xml:space="preserve">Visual Studio PowerShell Tools Interactive Window</Description>
     <Locale>1033</Locale>
     <InstalledByMsi>false</InstalledByMsi>
@@ -31,6 +31,6 @@
   <Content>
     <VsPackage>|%CurrentProject%;PkgdefProjectOutputGroup|</VsPackage>
     <MefComponent>|%CurrentProject%|</MefComponent>
-    <Assembly AssemblyName="PowerShellTools.ReplWindow, Version=1.8.50330.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">|%CurrentProject%|</Assembly>
+    <Assembly AssemblyName="PowerShellTools.ReplWindow, Version=1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">|%CurrentProject%|</Assembly>
   </Content>
 </Vsix>

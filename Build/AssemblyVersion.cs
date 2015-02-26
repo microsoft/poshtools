@@ -10,22 +10,19 @@ using System.Runtime.InteropServices;
 // Properties\AssemblyInfo.cs file and remove any lines duplicating the ones below.
 // (See also AssemblyInfoCommon.cs in this same directory.)
 
-[assembly: AssemblyVersion(AssemblyVersionInfo.StableVersion)]
-[assembly: AssemblyFileVersion(AssemblyVersionInfo.Version)]
+[assembly: AssemblyVersion(AssemblyVersionInfo.Version)]
 
 class AssemblyVersionInfo {
+    
     // This version string (and the comments for StableVersion and Version)
     // should be updated manually between major releases.
     // Servicing branches should retain the value
-    public const string ReleaseVersion = "2.0";
+    public const string MajorVersion = "1";
+
     // This version string (and the comment for StableVersion) should be
     // updated manually between minor releases.
     // Servicing branches should retain the value
-    public const string MinorVersion = "1";
-
-    // This version should never change from "4100.00"; BuildRelease.ps1
-    // will replace it with a generated value.
-    public const string BuildNumber = "4100.00";
+    public const string MinorVersion = "0";
 
 #if DEV10
     public const string VSMajorVersion = "10";
@@ -43,11 +40,9 @@ class AssemblyVersionInfo {
 #error Unrecognized VS Version.
 #endif
 
-    public const string VSVersion = VSMajorVersion + ".0";
-
-    // Defaults to "2.0.1.(2010|2012|2013)"
-    public const string StableVersion = ReleaseVersion + "." + MinorVersion + "." + VSVersionSuffix;
-
-    // Defaults to "2.0.4100.00"
-    public const string Version = ReleaseVersion + "." + BuildNumber;
+    // This will increment each build. TODO: Make this line up with AppVeyor's Build system better.
+    public const string BuildNumber = "*";
+    
+    // Defaults to "1.0.(2010|2012|2013).*"
+    public const string Version = MajorVersion + "." + MinorVersion + "." + VSVersionSuffix + "." + BuildNumber;
 }
