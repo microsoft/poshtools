@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-
+  <Import Project="$(BuildRoot)\Build\Common.Build.AssemblyInfo.targets" />
   <!-- Ensures that if this file changes it forces a rebuild -->
   <PropertyGroup>
     <MSBuildAllProjects>
-        $(MSBuildAllProjects);$(MSBuildThisFileFullPath)
+      $(MSBuildAllProjects);$(MSBuildThisFileFullPath)
     </MSBuildAllProjects>
   </PropertyGroup>
-
 
   <PropertyGroup>
     <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
@@ -44,8 +43,48 @@
     <SuppressCommonAssemblyMetadata Condition="'$(SuppressCommonAssemblyMetadata)' == ''">False</SuppressCommonAssemblyMetadata>
   </PropertyGroup>
 
+      <ItemGroup>
+        <AssemblyVersionAttribute Include="System.Reflection.AssemblyVersionAttribute">
+          <_Parameter1>$(AssemblyVersion)</_Parameter1>
+        </AssemblyVersionAttribute>
+
+        <AssemblyVersionAttribute Include="System.Reflection.AssemblyFileVersionAttribute">
+          <_Parameter1>$(BuildVersion)</_Parameter1>
+        </AssemblyVersionAttribute>
+
+        <AssemblyVersionAttribute Include="System.Reflection.AssemblyInformationalVersionAttribute">
+          <_Parameter1>$(BuildVersion)</_Parameter1>
+        </AssemblyVersionAttribute>
+
+        <Compile Include="$(BuildRoot)\Build\AssemblyInfoCommon.cs">
+          <Link>AssemblyInfoCommon.cs</Link>
+        </Compile>
+      </ItemGroup>
+    <PropertyGroup>
+      <CompileDependsOn>GenerateAssemblyInfoFile;$(CompileDependsOn)</CompileDependsOn>
+    </PropertyGroup>
+
+  <Target Name="GenerateAssemblyInfoFile">
+    <WriteCodeFragment AssemblyAttributes="@(AssemblyVersionAttribute)"
+                       Language="C#"
+                       OutputFile="$(MSBuildProjectDirectory)\GlobalAssemblyInfo.cs">
+      <Output TaskParameter="OutputFile" ItemName="Compile"/>
+      <Output TaskParameter="OutputFile" ItemName="FileWrites"/>
+    </WriteCodeFragment>
+  <Message Text="Running GenerateAssemblyInfoFile..."/>
+  </Target>
+  
+  <Target Name="GetBuildVersion" Outputs="$(BuildVersion)" /> <!-- This is used by the VSIX to get the Version. -->
 
 
+  <PropertyGroup>
+    <BuildNumber Condition=" '$(BuildNumber)' == '' ">0.1</BuildNumber>
+    <MajorVersion>2</MajorVersion>
+    <MinorVersion>1</MinorVersion>
+    <AssemblyVersion>$(MajorVersion).$(MinorVersion).0.0</AssemblyVersion>
+    <BuildVersion>$(MajorVersion).$(MinorVersion).$(BuildNumber)</BuildVersion>
+  </PropertyGroup>
+  
   <PropertyGroup>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>

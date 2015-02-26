@@ -12,6 +12,6 @@ using System.Runtime.InteropServices;
 // Properties\AssemblyInfo.cs file and remove any lines duplicating the ones below.
 // (See also AssemblyVersion.cs in this same directory.)
 [assembly: AssemblyCompany("PowerShell Tools")]
-[assembly: AssemblyProduct("PowerShell Tools for Visual Studio")]
+[assembly: AssemblyProduct("!!PowerShell Tools for Visual Studio")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

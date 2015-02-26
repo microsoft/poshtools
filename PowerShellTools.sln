@@ -25,7 +25,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{5FB2BDE5-5A7A-41A4-876E-6AD789B5CB80}"
 	ProjectSection(SolutionItems) = preProject
 		Build\AssemblyInfoCommon.cs = Build\AssemblyInfoCommon.cs
-		Build\AssemblyVersion.cs = Build\AssemblyVersion.cs
+		Common.Build.AssemblyInfo.targets = Build\Common.Build.AssemblyInfo.targets
 		Build\Common.Build.CSharp.settings = Build\Common.Build.CSharp.settings
 		Build\Common.Build.settings = Build\Common.Build.settings
 		Build\Common.Build.targets = Build\Common.Build.targets
