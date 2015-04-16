@@ -305,6 +305,7 @@
     <Compile Include="Intellisense\IntelliSenseManager.cs" />
     <Compile Include="Intellisense\PowerShellCompletionSource.cs" />
     <Compile Include="Intellisense\PowerShellCompletionSourceProvider.cs" />
+    <Compile Include="Intellisense\TabCompleteSession.cs" />
     <Compile Include="Intellisense\Utilities.cs" />
     <Compile Include="LanguageService\CodeWindowManager.cs" />
     <Compile Include="LanguageService\DropDownBarClient.cs" />
