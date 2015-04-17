@@ -324,23 +324,6 @@ namespace PowerShellTools.DebugEngine
 
             try
             {
-                bool timedOut = false;
-                System.Timers.Timer aTimer = new System.Timers.Timer(30000); // 30 seconds timeout
-                aTimer.Elapsed += (sender, args) => { timedOut = true; };
-
-                while (DebuggingService.GetRunspaceAvailability() != RunspaceAvailability.Available
-                    && !timedOut)
-                {
-                    Thread.Sleep(50); // polling every 50 milliseconds
-                }
-
-                if (timedOut)
-                {
-                    HostUi.VsOutputString(Resources.ErrorPipelineBusy);
-
-                    return false;
-                }
-
                 return ExecuteInternal(commandLine);
             }
             catch (Exception ex)

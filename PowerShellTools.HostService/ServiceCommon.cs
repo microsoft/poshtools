@@ -16,6 +16,7 @@ namespace PowerShellTools.HostService
 {
     public class ServiceCommon
     {
+        public static object RunspaceLock = new object();
 
         /// <summary>
         /// TODO: Temporary logging before having logging infrastructure ready

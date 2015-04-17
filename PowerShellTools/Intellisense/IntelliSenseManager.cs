@@ -472,11 +472,6 @@ namespace PowerShellTools.Intellisense
                     catch (Exception ex)
                     {
                         Log.Debug("Failed to process completion results. Exception: " + ex);
-
-                        if (_statusBar != null)
-                        {
-                            _statusBar.SetText(String.Format("Failed to process completion results in {0:0.00} seconds...", _sw.Elapsed.TotalSeconds));
-                        }
                     }
                 });
         }

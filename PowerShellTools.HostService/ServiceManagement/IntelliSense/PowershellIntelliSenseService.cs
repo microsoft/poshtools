@@ -4,6 +4,7 @@ using PowerShellTools.HostService.ServiceManagement.Debugging;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Management.Automation;
 using System.Management.Automation.Language;
 using System.Management.Automation.Runspaces;
 using System.ServiceModel;
@@ -47,7 +48,11 @@ namespace PowerShellTools.HostService.ServiceManagement
                     {
                         try
                         {
-                            var commandCompletion = CommandCompletionHelper.GetCommandCompletionList(_script, _caretPosition, _runspace);
+                            CommandCompletion commandCompletion = null;
+                            lock (ServiceCommon.RunspaceLock)
+                            {
+                                commandCompletion = CommandCompletionHelper.GetCommandCompletionList(_script, _caretPosition, _runspace);
+                            }
                             ServiceCommon.LogCallbackEvent("Callback intellisense at position {0}", _caretPosition);
                             _callback.PushCompletionResult(CompletionResultList.FromCommandCompletion(commandCompletion));
 
