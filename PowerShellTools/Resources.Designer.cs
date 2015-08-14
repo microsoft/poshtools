@@ -855,6 +855,33 @@ namespace PowerShellTools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unable to determine which runspace to debug..
+        /// </summary>
+        public static string RunspacePickerMessage {
+            get {
+                return ResourceManager.GetString("RunspacePickerMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select a runspace to debug:.
+        /// </summary>
+        public static string RunspacePickerPrompt {
+            get {
+                return ResourceManager.GetString("RunspacePickerPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Runspace Picker.
+        /// </summary>
+        public static string RunspacePickerTitle {
+            get {
+                return ResourceManager.GetString("RunspacePickerTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Specifies script (.ps1) files that run in the caller&apos;s session state when the module is imported. You can use these scripts to prepare an environment, just as you might use a login script..
         /// </summary>
         public static string ScriptsToProcess_Description {

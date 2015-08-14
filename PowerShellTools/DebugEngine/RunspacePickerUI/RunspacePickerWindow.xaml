@@ -1,0 +1,41 @@
+﻿<shell:VsShellDialogWindow x:Class="PowerShellTools.DebugEngine.RunspacePickerUI.RunspacePickerWindow"
+        x:ClassModifier="internal"                    
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:shell="clr-namespace:PowerShellTools.Common;assembly=PowerShellTools.Common"
+        xmlns:common="clr-namespace:PowerShellTools.Common.Controls;assembly=PowerShellTools.Common"
+        xmlns:package="clr-namespace:PowerShellTools"
+        xmlns:local="clr-namespace:PowerShellTools.Commands.UserInterface"
+        xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+        mc:Ignorable="d" 
+        Title="{x:Static package:Resources.RunspacePickerTitle}"
+        MinHeight="365"
+        MinWidth="530"
+        SizeToContent="WidthAndHeight"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        WindowStartupLocation="CenterOwner">
+    <Grid Margin="0,0,2,10">
+        <TextBlock x:Name="Prompt" HorizontalAlignment="Left" TextWrapping="Wrap" Text="{x:Static package:Resources.RunspacePickerPrompt}" VerticalAlignment="Top" RenderTransformOrigin="1.186,3.139" Margin="10,10,0,0"/>
+        <Button x:Name="OkButton" Content="{x:Static package:Resources.OkButtonLabel}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="76" Margin="356,294,0,0" Click="OkButton_Click"/>
+        <Button x:Name="CancelButton" Content="{x:Static package:Resources.CancelButtonLabel}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="437,294,0,0" Click="CancelButton_Click"/>
+        <ListView x:Name="RunspacesListView" HorizontalAlignment="Left" Height="258" Margin="10,31,0,0" VerticalAlignment="Top" Width="502">
+            <ListView.Resources>
+                <Style TargetType="{x:Type GridViewColumnHeader}">
+                    <Setter Property="HorizontalContentAlignment" Value="Left" />
+                </Style>
+            </ListView.Resources>
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Id" Width="25" DisplayMemberBinding="{Binding Id}" />
+                    <GridViewColumn Header="Name" Width="100" DisplayMemberBinding="{Binding Name}" />
+                    <GridViewColumn Header="Computer Name" Width="150" DisplayMemberBinding="{Binding ComputerName}" />
+                    <GridViewColumn Header="State" Width="75" DisplayMemberBinding="{Binding State}" />
+                    <GridViewColumn Header="Availability" Width="75" DisplayMemberBinding="{Binding Availability}" />
+                </GridView>
+            </ListView.View>
+        </ListView>
+    </Grid>
+</shell:VsShellDialogWindow>

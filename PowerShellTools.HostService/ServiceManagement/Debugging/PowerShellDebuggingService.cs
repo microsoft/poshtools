@@ -248,8 +248,27 @@ namespace PowerShellTools.HostService.ServiceManagement.Debugging
                     _pausedEvent.Reset();
                     _forceStop = false;
 
-                    // debug the runspace, for the vast majority of cases the 1st runspace is the one to attach to
-                    InvokeScript(_currentPowerShell, "Debug-Runspace -Id 1");
+                    Collection<PSObject> runspaces = InvokeScript(_currentPowerShell, DebugEngineConstants.GetRunspaces);
+                    if (runspaces.Count() <= 2)
+                    {
+                        // default case, we know that the only valid runspace to debug is the 1st runspace
+                        InvokeScript(_currentPowerShell, "Debug-Runspace -Id 1");
+                    }
+                    else
+                    {
+                        // if more than 2 runspaces, we ask the user to choose the runspace
+                        int chosenId = PromptUserToPickRunspace(runspaces);
+                        if (chosenId != -1)
+                        {
+                            InvokeScript(_currentPowerShell, string.Format("Debug-Runspace -Id {0}", chosenId));
+                        }
+                        else
+                        {
+                            // give user the option to back out of attaching
+                            CleanupAttach();
+                            return string.Empty;
+                        }
+                    }                   
 
                     if (_currentPowerShell.HadErrors)
                     {
@@ -257,39 +276,9 @@ namespace PowerShellTools.HostService.ServiceManagement.Debugging
                     }
                 }
             }
-            catch (RemoteException remoteException)
-            {
-                if (_forceStop)
-                {
-                    // exception is expected if user asks to stop debugging while script is running, no need to notify
-                    ServiceCommon.Log(string.Format("Forced to detach via stop command; {0}", remoteException.ToString()));
-                }
-                else
-                {
-                    // some actions, such as closing a remote process mid debugging may cause an unexpected remote exception
-                    ServiceCommon.Log(string.Format("Unexpected remote exception while debugging runspace; {0}", remoteException.ToString()));
-                    return Resources.ProcessDebugError;
-                }
-            }
-            catch (PSRemotingDataStructureException remotingDataStructureException)
-            {
-                if (_forceStop)
-                {
-                    // exception is expected if we have to stop during cleanup
-                    ServiceCommon.Log(string.Format("Forced to detach via stop command; {0}", remotingDataStructureException.ToString()));
-                }
-                else
-                {
-                    // some actions, such as closing a remote process mid debugging may cause an unexpected remote exception
-                    ServiceCommon.Log(string.Format("Unexpected remote exception while debugging runspace; {0}", remotingDataStructureException.ToString()));
-                    return Resources.ProcessDebugError;
-                }
-            }
             catch (Exception exception)
             {
-                // any other sort of exception is not expected
-                ServiceCommon.Log(string.Format("Unexpected exception while debugging runspace; {0}", exception.ToString()));
-                return Resources.ProcessDebugError;
+                return HandleAttachToRunspaceException(exception);
             }
             return result;
         }
@@ -363,6 +352,13 @@ namespace PowerShellTools.HostService.ServiceManagement.Debugging
             if (_callback == null)
             {
                 _callback = OperationContext.Current.GetCallbackChannel<IDebugEngineCallback>();
+            }
+
+            // Make sure local machine supports remote session
+            if (_installedPowerShellVersion < RequiredPowerShellVersionForRemoteSessionDebugging)
+            {
+                errorMessage = string.Format(Resources.EnumLocalVersionError, _installedPowerShellVersion.ToString());
+                return null;
             }
 
             try

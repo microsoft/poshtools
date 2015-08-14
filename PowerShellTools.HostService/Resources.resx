@@ -127,6 +127,9 @@
   <data name="CredentialDialogMessage" xml:space="preserve">
     <value>Enter your credentials.</value>
   </data>
+  <data name="EnumLocalVersionError" xml:space="preserve">
+    <value>Unable to attach with current local PowerShell version ({0}). Please ensure that PowerShell v4 or higher is installed.</value>
+  </data>
   <data name="EnumRemoteConnectionError" xml:space="preserve">
     <value>Unable to connect to {0}. Retry?</value>
     <comment>{0} - remote machine name</comment>

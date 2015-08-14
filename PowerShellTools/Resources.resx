@@ -426,4 +426,25 @@ Would you like to download now?</value>
   <data name="Warning_MandatoryValueNotSet_1arg" xml:space="preserve">
     <value>Parameter '{0}' is Mandatory.</value>
   </data>
+  <data name="RunspacePickerMessage" xml:space="preserve">
+    <value>Unable to determine which runspace to debug.</value>
+  </data>
+  <data name="RunspacePickerPrompt" xml:space="preserve">
+    <value>Select a runspace to debug:</value>
+  </data>
+  <data name="RunspacePickerTitle" xml:space="preserve">
+    <value>Runspace Picker</value>
+  </data>
+  <data name="RunspacePickerMessage" xml:space="preserve">
+    <value>Unable to determine which runspace to debug.</value>
+  </data>
+  <data name="RunspacePickerPrompt" xml:space="preserve">
+    <value>Select a runspace to debug:</value>
+  </data>
+  <data name="RunspacePickerTitle" xml:space="preserve">
+    <value>Runspace Picker</value>
+  </data>
+  <data name="Warning_MandatoryValueNotSet_1arg" xml:space="preserve">
+    <value>Parameter '{0}' is Mandatory.</value>
+  </data>
 </root>

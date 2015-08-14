@@ -258,6 +258,10 @@
     <Compile Include="Commands\UserInterface\ParameterEditorView.xaml.cs">
       <DependentUpon>ParameterEditorView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DebugEngine\RunspacePickerUI\RunspacePickerWindow.xaml.cs">
+      <DependentUpon>RunspacePickerWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DebugEngine\RunspacePickerUI\RunspacePickerWindowViewModel.cs" />
     <Compile Include="Commands\UserInterface\ScriptParameter.cs" />
     <Compile Include="Commands\UserInterface\ScriptParameterViewModel.cs" />
     <Compile Include="Commands\UserInterface\ValidationResult.cs" />
@@ -768,6 +772,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="DebugEngine\RunspacePickerUI\RunspacePickerWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="CredentialUI\SecureStringDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -795,6 +803,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project\SharedProject\Debugger\" />
+    <Folder Include="Themes\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PowerShell.HostService.Console\PowerShell.HostService.Console.csproj">

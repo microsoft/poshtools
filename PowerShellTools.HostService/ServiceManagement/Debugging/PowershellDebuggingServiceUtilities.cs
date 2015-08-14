@@ -11,6 +11,7 @@ using EnvDTE80;
 using Microsoft.PowerShell;
 using PowerShellTools.Common.Debugging;
 using PowerShellTools.Common.ServiceManagement.DebuggingContract;
+using System.Management.Automation.Remoting;
 
 namespace PowerShellTools.HostService.ServiceManagement.Debugging
 {
@@ -423,6 +424,46 @@ namespace PowerShellTools.HostService.ServiceManagement.Debugging
             powerShell.Commands.Clear();
             powerShell.Commands = enterSession;
             powerShell.Invoke();
+        }
+
+        /// <summary>
+        /// Determines what string AttachToRunspace should return if it encounters an exception.
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <returns></returns>
+        private string HandleAttachToRunspaceException(Exception exception)
+        {
+            if (exception is RemoteException || exception is PSRemotingDataStructureException)
+            {
+                if (_forceStop)
+                {
+                    // these two types of exceptions are expected if we have to stop during cleanup
+                    ServiceCommon.Log(string.Format("Forced to detach via stop command; {0}", exception.ToString()));
+                    return "";
+                }
+                else
+                {
+                    // other actions, such as closing a remote process mid debugging may cause an unexpected exception of these types
+                    ServiceCommon.Log(string.Format("Unexpected remote exception while debugging runspace; {0}", exception.ToString()));
+                    return Resources.ProcessDebugError;
+                }
+            }
+            else
+            {
+                // any other sort of exception is not expected
+                ServiceCommon.Log(string.Format("Unexpected exception while debugging runspace; {0}", exception.ToString()));
+                return Resources.ProcessDebugError;
+            }
+        }
+
+        /// <summary>
+        /// Sends a collection of runspaces' info to the callback so it can present a dialog to the user
+        /// </summary>
+        /// <param name="runspaces">Collection of info for various runspaces in PSObject format</param>
+        /// <returns>Id of the selected runspace, -1 if user hit cancel</returns>
+        private int PromptUserToPickRunspace(Collection<PSObject> runspaces)
+        {
+            return _callback.PromptUserToPickRunspace(runspaces);
         }
     }
 }

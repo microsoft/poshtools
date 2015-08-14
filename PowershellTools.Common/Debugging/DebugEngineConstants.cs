@@ -163,5 +163,10 @@ param (
         /// Cmdlet to get a user's credentials. Used for attaching remotely. The $null Credential parameter supresses unwanted output in the REPL window.
         /// </summary>
         public const string GetCredentialsCommand = "Get-Credential -Credential $null";
+
+        /// <summary>
+        /// Used to get information about runspaces.
+        /// </summary>
+        public const string GetRunspaces = @"Get-Runspace | Select-Object Id, Name, ConnectionInfo, RunspaceStateInfo, RunspaceAvailability";
     }
 }

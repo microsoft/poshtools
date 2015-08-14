@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
 using System.Security;
 using PowerShellTools.Repl;
+using PowerShellTools.Commands.UserInterface;
+using PowerShellTools.DebugEngine.RunspacePickerUI;
 using Thread = System.Threading.Thread;
 
 namespace PowerShellTools.DebugEngine
@@ -398,6 +401,51 @@ namespace PowerShellTools.DebugEngine
             {
                 OutputString(output);
             }
+        }
+
+        public int PromptUserToPickRunspace(Collection<PSObject> runspaces)
+        {
+            // grab info from each PSObject and wrap it up inside of a RunspaceInfo object
+            List<RunspaceInfo> runspaceInfos = new List<RunspaceInfo>();
+            foreach (PSObject obj in runspaces)
+            {
+                int runspaceId = (int)obj.Properties["Id"].Value;
+                string runspaceName = obj.Properties["Name"].Value.ToString();
+
+                string computerName;
+                if(obj.Properties["ConnectionInfo"].Value == null)
+                {
+                    // assume localhost if the runspace does not have a connection info
+                    computerName = "localhost";
+                }
+                else
+                {
+                    computerName = (obj.Properties["ConnectionInfo"].Value as PSObject).Properties["ComputerName"].ToString();
+                }
+
+                string state = obj.Properties["RunspaceStateInfo"].Value.ToString();
+                string availability = obj.Properties["RunspaceAvailability"].Value.ToString();
+
+                runspaceInfos.Add(new RunspaceInfo(runspaceId, runspaceName, computerName, state, availability));
+            }
+
+            int chosenRunspace = -1;
+            ThreadHelper.Generic.Invoke(() =>
+            {
+                var viewModel = new RunspacePickerWindowViewModel(runspaceInfos);
+                var view = new RunspacePickerWindow(viewModel);
+
+                if (view.ShowModal() == true)
+                {
+                    chosenRunspace = view.RunspacesListView.SelectedIndex;
+                }
+                else
+                {
+                    chosenRunspace = -1;
+                }
+            });
+
+            return chosenRunspace;
         }
     }
 }
